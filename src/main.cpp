@@ -1,18 +1,23 @@
-#include <Arduino.h>
+#include "Config.h"
 
-// put function declarations here:
-int myFunction(int, int);
+#include "DebugEsp.h"
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+DebugEsp debug;
+
+void setup()
+{
+  debug.begin(9600); // Initialize Serial at 115200 baud rate
+  debug.debI("Initializing sensors...", true);
+  debug.debW("Low battery warning", true);
+  debug.debE("Failed to connect to WiFi ", true);
+  while (millis() < 5000)
+  {
+    debug.debActivityIndicator();
+    delay(100);
+  }
+  debug.debI("WifiStarted", true);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
 }
