@@ -3,6 +3,10 @@
 
 #include "Arduino.h"
 #include "Config.h"
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <WebSerial.h>
 
 // Log levels
 enum LogLevel
