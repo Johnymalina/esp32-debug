@@ -9,7 +9,7 @@ DebugEsp::DebugEsp() {}
 void DebugEsp::begin(unsigned long baudRate)
 {
     Serial.begin(baudRate);
-    delay(1000); // Give some time for Serial to start
+    delay(2000); // Give some time for Serial to start
 }
 
 // Print without new line for errors
@@ -36,6 +36,11 @@ void DebugEsp::debActivityIndicator()
     Serial.print("\b");                         // Move cursor back to overwrite the previous character
     Serial.print(activityChars[activityState]); // Print the current activity character
     activityState = (activityState + 1) % 4;    // Update the state to the next character
+}
+
+void DebugEsp::debActivityIndicatorStop()
+{
+    Serial.println(); // Update the state to the next character
 }
 
 // Helper function for logging messages with or without newline

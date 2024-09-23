@@ -24,6 +24,7 @@ public:
     void debI(const char *message, bool newline);
     void debW(const char *message, bool newline);
     void debActivityIndicator();
+    void debActivityIndicatorStop();
 
 private:
     void printLog(LogLevel level, const char *message, bool newLine);
@@ -41,6 +42,7 @@ public:
     void debI(const char *message, bool newline) {}
     void debW(const char *message, bool newline) {}
     void debActivityIndicator() {}
+    void debActivityIndicatorStop() {}
 };
 
 #endif // DEBUG_ACTIVE
