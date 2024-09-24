@@ -14,11 +14,6 @@ void setup()
   debug.debI("Starting network...", true);
   network.setCallback();
   network.begin();
-  while (millis() < 5000)
-  {
-    debug.debActivityIndicator();
-    delay(100);
-  }
   debug.debActivityIndicatorStop();
 }
 

@@ -22,6 +22,7 @@ public:
     void setCallback();
 
 private:
+    bool net_connected = false;
 };
 
 #endif

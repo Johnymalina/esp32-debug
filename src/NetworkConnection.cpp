@@ -1,9 +1,9 @@
-#include <NetworkConnection.h>
+#include "NetworkConnection.h"
 #include <Arduino.h>
 #include "DebugEsp.h"
 #include "Config.h"
 
-static bool net_connected = false;
+bool net_connected = false;
 
 void WiFiEvent(WiFiEvent_t event)
 {
@@ -29,8 +29,10 @@ void WiFiEvent(WiFiEvent_t event)
         break;
 
     case ARDUINO_EVENT_ETH_DISCONNECTED:
-
-        debug.debW("ETH Disconnected", true);
+        if (net_connected)
+        {
+            debug.debW("ETH Disconnected", true);
+        }
         net_connected = false;
         break;
 
@@ -42,7 +44,7 @@ void WiFiEvent(WiFiEvent_t event)
 
     case ARDUINO_EVENT_WIFI_READY:
 
-        debug.debI("WiFi ready to connect", true);
+        debug.debI("WiFi connecting...", true);
         break;
 
     case ARDUINO_EVENT_WIFI_STA_CONNECTED:
@@ -87,13 +89,13 @@ void NetworkConnection::begin()
     WiFi.setHostname(HOSTNAME);
     WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
     while (!WiFi.isConnected())
     {
         debug.debActivityIndicator();
         delay(100);
     }
     debug.debActivityIndicatorStop();
-    delay(500);
     // TODO Fallback WLAN connection when ethernet is not avalaible
 }
 
