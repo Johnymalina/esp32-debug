@@ -24,14 +24,14 @@ class DebugEsp
 public:
     DebugEsp();
     void begin(unsigned long baudRate);
-    void debE(const char *message, bool newline);
-    void debI(const char *message, bool newline);
-    void debW(const char *message, bool newline);
+    void debE(String message, bool newline);
+    void debI(String message, bool newline);
+    void debW(String message, bool newline);
     void debActivityIndicator();
     void debActivityIndicatorStop();
 
 private:
-    void printLog(LogLevel level, const char *message, bool newLine);
+    void printLog(LogLevel level, String message, bool newLine);
     int activityState;
 };
 
@@ -42,9 +42,9 @@ class DebugEsp
 public:
     DebugEsp() {}
     void begin(unsigned long baudRate) {}
-    void debE(const char *message, bool newline) {}
-    void debI(const char *message, bool newline) {}
-    void debW(const char *message, bool newline) {}
+    void debE(String message, bool newline) {}
+    void debI(String message, bool newline) {}
+    void debW(String message, bool newline) {}
     void debActivityIndicator() {}
     void debActivityIndicatorStop() {}
 };
