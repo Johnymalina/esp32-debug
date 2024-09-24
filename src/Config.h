@@ -20,5 +20,7 @@
 #define DEFAULT_GATEWAY 10, 10, 42, 1
 #define SUBNET_MASK 255, 255, 255, 0
 #define HOSTNAME "Lora2MQTT Gateway"
+#define WIFI_SSID
+#define WIFI_PASSWORD
 
 #endif // CONFIG_H
