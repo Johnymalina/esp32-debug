@@ -46,14 +46,15 @@ void WiFiEvent(WiFiEvent_t event)
         break;
 
     case ARDUINO_EVENT_WIFI_STA_CONNECTED:
-        debug.debI("Wlan connected", true);
+        debug.debActivityIndicatorStop();
+        debug.debI("WiFi connected", true);
         net_connected = true;
         break;
 
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
         if (net_connected)
         {
-            debug.debW("Wlan disconnected", true);
+            debug.debW("WiFi disconnected", true);
         }
         net_connected = false;
 
@@ -66,10 +67,6 @@ void WiFiEvent(WiFiEvent_t event)
         debug.debI(String("Hostname: ") + WiFi.getHostname(), true);
         debug.debI(String("MAC: ") + WiFi.macAddress(), true);
         debug.debI(String("Signal: ") + WiFi.getTxPower() + String("dB"), true);
-        break;
-
-    case ARDUINO_EVENT_WIFI_STA_LOST_IP:
-        debug.debI("ARDUINO_EVENT_WIFI_STA_LOST_IP", true);
         break;
 
     default:
@@ -97,6 +94,7 @@ void NetworkConnection::begin()
         debug.debActivityIndicator();
         delay(100);
     }
+
     debug.debActivityIndicatorStop();
     // TODO Fallback WLAN connection when ethernet is not avalaible
 }

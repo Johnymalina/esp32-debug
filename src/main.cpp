@@ -14,7 +14,6 @@ void setup()
   debug.debI("Starting network...", true);
   network.setCallback();
   network.begin();
-  debug.debActivityIndicatorStop();
 }
 
 void loop()

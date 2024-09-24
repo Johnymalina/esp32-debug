@@ -59,26 +59,35 @@ void DebugEsp::debActivityIndicator()
 void DebugEsp::debActivityIndicatorStop()
 {
 #ifdef SERIAL_DEBUG
+    Serial.print("\b");
+    Serial.print(" ");
     Serial.println();
 #endif // SERIAL_DEBUG
 }
-
-#ifdef SERIAL_DEBUG
 
 void DebugEsp::printLog(LogLevel level, String message, bool newLine)
 {
     switch (level)
     {
+
     case INFO:
+#ifdef SERIAL_DEBUG
         Serial.print("[INFO] ");
+#endif // SERIAL_DEBUG
         break;
+
     case WARNING:
+#ifdef SERIAL_DEBUG
         Serial.print("[WARNING] ");
+#endif // SERIAL_DEBUG
         break;
+
     case ERROR:
+#ifdef SERIAL_DEBUG
         Serial.print("[ERROR] ");
+#endif // SERIAL_DEBUG
         break;
-    }
+        }
 
     if (newLine)
     {
@@ -89,6 +98,5 @@ void DebugEsp::printLog(LogLevel level, String message, bool newLine)
         Serial.print(message);
     }
 }
-#endif // SERIAL_DEBUG
 
 #endif // DEBUG_ACTIVE
