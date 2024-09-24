@@ -16,4 +16,8 @@
 
 #define NETWORK_CONNECTION_WIFI
 
+#define IP_ADDRESS 10, 10, 42, 5
+#define DEFAULT_GATEWAY 10, 10, 42, 1
+#define SUBNET_MASK 255, 255, 255, 0
+
 #endif // CONFIG_H
