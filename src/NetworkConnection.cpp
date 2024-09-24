@@ -41,7 +41,33 @@ void WiFiEvent(WiFiEvent_t event)
         debug.debW("ETH Stopped", true);
         eth_connected = false;
         break;
-
+    case ARDUINO_EVENT_WIFI_READY:
+        debug.debI("ARDUINO_EVENT_WIFI_READY", true);
+        break;
+    case ARDUINO_EVENT_WIFI_SCAN_DONE:
+        debug.debI("ARDUINO_EVENT_WIFI_SCAN_DONE", true);
+        break;
+    case ARDUINO_EVENT_WIFI_STA_START:
+        debug.debI("ARDUINO_EVENT_WIFI_STA_START", true);
+        break;
+    case ARDUINO_EVENT_WIFI_STA_STOP:
+        debug.debI("ARDUINO_EVENT_WIFI_STA_STOP", true);
+        break;
+    case ARDUINO_EVENT_WIFI_STA_CONNECTED:
+        debug.debI("ARDUINO_EVENT_WIFI_STA_CONNECTED", true);
+        break;
+    case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
+        debug.debI("ARDUINO_EVENT_WIFI_STA_DISCONNECTED", true);
+        break;
+    case ARDUINO_EVENT_WIFI_STA_AUTHMODE_CHANGE:
+        debug.debI("ARDUINO_EVENT_WIFI_STA_AUTHMODE_CHANGE", true);
+        break;
+    case ARDUINO_EVENT_WIFI_STA_GOT_IP:
+        debug.debI("ARDUINO_EVENT_WIFI_STA_GOT_IP", true);
+        break;
+    case ARDUINO_EVENT_WIFI_STA_LOST_IP:
+        debug.debI("ARDUINO_EVENT_WIFI_STA_LOST_IP", true);
+        break;
     default:
         break;
     }
@@ -53,10 +79,11 @@ NetworkConnection::NetworkConnection()
 
 void NetworkConnection::begin()
 {
+
+#ifdef NETWORK_CONNECTION_ETH
     ETH.begin();
-
-    ETH.config(IPAddress(10, 10, 42, 5), IPAddress(10, 10, 42, 1), IPAddress(255, 255, 255, 0));
-
+    ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+#endif
     // TODO Fallback WLAN connection when ethernet is not avalaible
 }
 
