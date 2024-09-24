@@ -11,7 +11,6 @@ void WiFiEvent(WiFiEvent_t event)
     {
 
     case ARDUINO_EVENT_ETH_START:
-        ETH.setHostname("lora2mqtt-gateway");
         debug.debI("Ethernet Network Started", true);
         break;
 
@@ -25,7 +24,6 @@ void WiFiEvent(WiFiEvent_t event)
         debug.debI(String("Hostname: ") + ETH.getHostname(), true);
         debug.debI(String("MAC: ") + ETH.macAddress(), true);
         debug.debI(String("Speed: ") + ETH.linkSpeed() + String("Mbps"), true);
-        net_connected = true;
         break;
 
     case ARDUINO_EVENT_ETH_DISCONNECTED:
@@ -41,7 +39,7 @@ void WiFiEvent(WiFiEvent_t event)
         net_connected = false;
         break;
 
-    case ARDUINO_EVENT_WIFI_READY:
+    case ARDUINO_EVENT_WIFI_STA_START:
         debug.debI("WiFi connecting...", false);
         break;
 
@@ -51,15 +49,6 @@ void WiFiEvent(WiFiEvent_t event)
         net_connected = true;
         break;
 
-    case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
-        if (net_connected)
-        {
-            debug.debW("WiFi disconnected", true);
-        }
-        net_connected = false;
-
-        break;
-
     case ARDUINO_EVENT_WIFI_STA_GOT_IP:
 
         debug.debI(String("SSID: ") + WiFi.SSID(), true);
@@ -67,6 +56,19 @@ void WiFiEvent(WiFiEvent_t event)
         debug.debI(String("Hostname: ") + WiFi.getHostname(), true);
         debug.debI(String("MAC: ") + WiFi.macAddress(), true);
         debug.debI(String("Signal: ") + WiFi.getTxPower() + String("dB"), true);
+        break;
+
+    case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
+        if (net_connected)
+        {
+            debug.debW("WiFi disconnected", true);
+        }
+        net_connected = false;
+        break;
+
+    case ARDUINO_EVENT_WIFI_STA_STOP:
+        debug.debW("WiFi Stopped", true);
+        net_connected = false;
         break;
 
     default:
@@ -82,6 +84,7 @@ void NetworkConnection::begin()
 {
 
 #ifdef NETWORK_CONNECTION_ETH
+    ETH.setHostname(HOSTNAME);
     ETH.begin();
     ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
 #endif
