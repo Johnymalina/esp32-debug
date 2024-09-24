@@ -9,18 +9,18 @@ void WiFiEvent(WiFiEvent_t event)
 {
     switch (event)
     {
-    case ARDUINO_EVENT_ETH_START:
 
+    case ARDUINO_EVENT_ETH_START:
         ETH.setHostname("lora2mqtt-gateway");
         debug.debI("Ethernet Network Started", true);
         break;
-    case ARDUINO_EVENT_ETH_CONNECTED:
 
+    case ARDUINO_EVENT_ETH_CONNECTED:
         debug.debI("Ethernet Network Connected", true);
+        net_connected = true;
         break;
 
     case ARDUINO_EVENT_ETH_GOT_IP:
-
         debug.debI(String("Ethernet IPv4: ") + ETH.localIP(), true);
         debug.debI(String("Hostname: ") + ETH.getHostname(), true);
         debug.debI(String("MAC: ") + ETH.macAddress(), true);
@@ -37,24 +37,26 @@ void WiFiEvent(WiFiEvent_t event)
         break;
 
     case ARDUINO_EVENT_ETH_STOP:
-
         debug.debW("ETH Stopped", true);
         net_connected = false;
         break;
 
     case ARDUINO_EVENT_WIFI_READY:
-
-        debug.debI("WiFi connecting...", true);
+        debug.debI("WiFi connecting...", false);
         break;
 
     case ARDUINO_EVENT_WIFI_STA_CONNECTED:
-
         debug.debI("Wlan connected", true);
+        net_connected = true;
         break;
 
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
+        if (net_connected)
+        {
+            debug.debW("Wlan disconnected", true);
+        }
+        net_connected = false;
 
-        debug.debW("Wlan disconnected", true);
         break;
 
     case ARDUINO_EVENT_WIFI_STA_GOT_IP:
