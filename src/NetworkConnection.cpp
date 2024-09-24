@@ -3,22 +3,20 @@
 #include "DebugEsp.h"
 #include "Config.h"
 
-static bool eth_connected = false;
+static bool net_connected = false;
 
 void WiFiEvent(WiFiEvent_t event)
 {
     switch (event)
     {
     case ARDUINO_EVENT_ETH_START:
+
         ETH.setHostname("lora2mqtt-gateway");
-
         debug.debI("Ethernet Network Started", true);
-
         break;
     case ARDUINO_EVENT_ETH_CONNECTED:
 
         debug.debI("Ethernet Network Connected", true);
-
         break;
 
     case ARDUINO_EVENT_ETH_GOT_IP:
@@ -27,47 +25,49 @@ void WiFiEvent(WiFiEvent_t event)
         debug.debI(String("Hostname: ") + ETH.getHostname(), true);
         debug.debI(String("MAC: ") + ETH.macAddress(), true);
         debug.debI(String("Speed: ") + ETH.linkSpeed() + String("Mbps"), true);
-        eth_connected = true;
+        net_connected = true;
         break;
 
     case ARDUINO_EVENT_ETH_DISCONNECTED:
 
         debug.debW("ETH Disconnected", true);
-        eth_connected = false;
+        net_connected = false;
         break;
 
     case ARDUINO_EVENT_ETH_STOP:
 
         debug.debW("ETH Stopped", true);
-        eth_connected = false;
+        net_connected = false;
         break;
+
     case ARDUINO_EVENT_WIFI_READY:
-        debug.debI("ARDUINO_EVENT_WIFI_READY", true);
+
+        debug.debI("WiFi ready to connect", true);
         break;
-    case ARDUINO_EVENT_WIFI_SCAN_DONE:
-        debug.debI("ARDUINO_EVENT_WIFI_SCAN_DONE", true);
-        break;
-    case ARDUINO_EVENT_WIFI_STA_START:
-        debug.debI("ARDUINO_EVENT_WIFI_STA_START", true);
-        break;
-    case ARDUINO_EVENT_WIFI_STA_STOP:
-        debug.debI("ARDUINO_EVENT_WIFI_STA_STOP", true);
-        break;
+
     case ARDUINO_EVENT_WIFI_STA_CONNECTED:
-        debug.debI("ARDUINO_EVENT_WIFI_STA_CONNECTED", true);
+
+        debug.debI("Wlan connected", true);
         break;
+
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
-        debug.debI("ARDUINO_EVENT_WIFI_STA_DISCONNECTED", true);
+
+        debug.debW("Wlan disconnected", true);
         break;
-    case ARDUINO_EVENT_WIFI_STA_AUTHMODE_CHANGE:
-        debug.debI("ARDUINO_EVENT_WIFI_STA_AUTHMODE_CHANGE", true);
-        break;
+
     case ARDUINO_EVENT_WIFI_STA_GOT_IP:
-        debug.debI("ARDUINO_EVENT_WIFI_STA_GOT_IP", true);
+
+        debug.debI(String("SSID: ") + WiFi.SSID(), true);
+        debug.debI(String("Wlan IPv4: ") + WiFi.localIP().toString(), true);
+        debug.debI(String("Hostname: ") + WiFi.getHostname(), true);
+        debug.debI(String("MAC: ") + WiFi.macAddress(), true);
+        debug.debI(String("Signal: ") + WiFi.getTxPower() + String("dB"), true);
         break;
+
     case ARDUINO_EVENT_WIFI_STA_LOST_IP:
         debug.debI("ARDUINO_EVENT_WIFI_STA_LOST_IP", true);
         break;
+
     default:
         break;
     }
@@ -84,6 +84,16 @@ void NetworkConnection::begin()
     ETH.begin();
     ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
 #endif
+    WiFi.setHostname(HOSTNAME);
+    WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    while (!WiFi.isConnected())
+    {
+        debug.debActivityIndicator();
+        delay(100);
+    }
+    debug.debActivityIndicatorStop();
+    delay(500);
     // TODO Fallback WLAN connection when ethernet is not avalaible
 }
 
