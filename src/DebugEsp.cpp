@@ -1,5 +1,9 @@
 #include "DebugEsp.h"
 
+#ifdef WEBSERIAL_DEBUG
+AsyncWebServer server(80);
+#endif
+
 #ifdef DEBUG_ACTIVE
 
 // Constructor
@@ -19,7 +23,7 @@ void DebugEsp::begin(unsigned long baudRate)
 }
 
 // Print without new line for errors
-void DebugEsp::debE(const char *message, bool newline)
+void DebugEsp::debE(String message, bool newline)
 {
 #ifdef SERIAL_DEBUG
     printLog(ERROR, message, newline);
@@ -27,7 +31,7 @@ void DebugEsp::debE(const char *message, bool newline)
 }
 
 // Log info with new line
-void DebugEsp::debI(const char *message, bool newline)
+void DebugEsp::debI(String message, bool newline)
 {
 #ifdef SERIAL_DEBUG
     printLog(INFO, message, newline);
@@ -35,7 +39,7 @@ void DebugEsp::debI(const char *message, bool newline)
 }
 
 // Log warnings with new line
-void DebugEsp::debW(const char *message, bool newline)
+void DebugEsp::debW(String message, bool newline)
 {
 #ifdef SERIAL_DEBUG
     printLog(WARNING, message, newline);
@@ -61,7 +65,7 @@ void DebugEsp::debActivityIndicatorStop()
 
 #ifdef SERIAL_DEBUG
 
-void DebugEsp::printLog(LogLevel level, const char *message, bool newLine)
+void DebugEsp::printLog(LogLevel level, String message, bool newLine)
 {
     switch (level)
     {
