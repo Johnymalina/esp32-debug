@@ -35,6 +35,8 @@ private:
     int activityState;
 };
 
+extern DebugEsp debug;
+
 #else // DEBUG_ACTIVE is not defined, so ignore debug
 
 class DebugEsp

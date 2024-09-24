@@ -1,5 +1,3 @@
-#include "Config.h"
-
 #include "DebugEsp.h"
 
 DebugEsp debug;
@@ -16,7 +14,7 @@ void setup()
   debug.debActivityIndicatorStop();
 
   debug.debI("Sensor Initialized", true);
-  
+
   debug.debE("Failed to connect to WiFi ", true);
 
   debug.debI("WifiStarted", true);
