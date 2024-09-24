@@ -20,9 +20,9 @@ public:
     NetworkConnection();
     void begin();
     void setCallback();
+    bool net_connected;
 
 private:
-    bool net_connected;
 };
 
 #endif

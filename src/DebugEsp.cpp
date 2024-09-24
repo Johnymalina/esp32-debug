@@ -14,7 +14,7 @@ void DebugEsp::begin(unsigned long baudRate)
 {
 #ifdef SERIAL_DEBUG
     Serial.begin(baudRate);
-    delay(2000); // Give some time for Serial to start
+    delay(500); // Give some time for Serial to start
 #endif
 
 #ifdef WEBSERIAL_DEBUG
