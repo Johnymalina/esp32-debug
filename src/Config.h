@@ -2,6 +2,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "Secrets.h"
+
 // INFO Debug related config
 
 #define DEBUG_ACTIVE
@@ -20,6 +22,9 @@
 #define DEFAULT_GATEWAY 10, 10, 42, 1
 #define SUBNET_MASK 255, 255, 255, 0
 #define HOSTNAME "Lora2MQTT Gateway"
-// INFO SSID and Password set in Secrets.h> #define WIFI_SSID "YourSSID" #define WIFI_PASSWORD "YourPassword"
+
+/* SSID and Password set in Secrets.h>
+#define WIFI_SSID "YourSSID"
+#define WIFI_PASSWORD "YourPassword" */
 
 #endif // CONFIG_H
