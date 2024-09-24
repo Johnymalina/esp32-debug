@@ -61,7 +61,7 @@ void WiFiEvent(WiFiEvent_t event)
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
         if (net_connected)
         {
-            debug.debW("WiFi disconnected", true);
+            debug.debW("WiFi disconnected. Reconnecting...", true);
         }
         net_connected = false;
         break;
@@ -107,6 +107,11 @@ void NetworkConnection::setCallback()
     debug.debI("Network Callback Active", true);
 
     WiFi.onEvent(WiFiEvent);
+}
+
+bool NetworkConnection::isConnected()
+{
+    return net_connected;
 }
 
 // TODO Periodicaly check connection status wlan/ethernet. Make sense to add also if connected when its not possible to publish this status wehn network is not connected?

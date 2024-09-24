@@ -20,6 +20,7 @@ public:
     NetworkConnection();
     void begin();
     void setCallback();
+    bool isConnected();
     bool net_connected;
 
 private:
