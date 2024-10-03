@@ -99,7 +99,7 @@ void NetworkConnection::begin()
     }
 
     debug.debActivityIndicatorStop();
-    // TODO Fallback WLAN connection when ethernet is not avalaible
+    // TODO Fallback WLAN connection when ethernet is not available
 }
 
 void NetworkConnection::setCallback()
@@ -114,4 +114,4 @@ bool NetworkConnection::isConnected()
     return net_connected;
 }
 
-// TODO Periodicaly check connection status wlan/ethernet. Make sense to add also if connected when its not possible to publish this status wehn network is not connected?
+// TODO Periodically check connection status wlan/ethernet. Make sense to add also if connected when its not possible to publish this status when network is not connected?
