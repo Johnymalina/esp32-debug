@@ -3,7 +3,7 @@
 #include "DebugEsp.h"
 #include "Config.h"
 
-bool net_connected = false;
+volatile bool net_connected = false;
 
 void WiFiEvent(WiFiEvent_t event)
 {
