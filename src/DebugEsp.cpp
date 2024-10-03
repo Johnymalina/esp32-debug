@@ -1,13 +1,19 @@
 #include "DebugEsp.h"
 
 #ifdef WEBSERIAL_DEBUG
+
+#include "NetworkConnection.h"
+
 AsyncWebServer server(80);
-#endif
+
+#endif // WEBSERIAL_DEBUG
 
 #ifdef DEBUG_ACTIVE
 
 // Constructor
-DebugEsp::DebugEsp() {}
+DebugEsp::DebugEsp()
+{
+}
 
 // Initialize the logger with the baud rate
 void DebugEsp::begin(unsigned long baudRate)
@@ -15,55 +21,61 @@ void DebugEsp::begin(unsigned long baudRate)
 #ifdef SERIAL_DEBUG
 
     Serial.begin(baudRate);
-    delay(500); // Give some time for Serial to start
 
 #endif // SERIAL_DEBUG
 
 #ifdef WEBSERIAL_DEBUG
 
-#endif
+    debug.debI("Starting network...", true);
+    network.setCallback();
+    network.begin();
+    WebSerial.begin(&server);
+    server.begin();
+
+#endif // WEBSERIAL_DEBUG
+
+    delay(1000);
+
+    debug.debI("Debug started", true);
 }
 
 // Print without new line for errors
 void DebugEsp::debE(String message, bool newline)
 {
-#ifdef SERIAL_DEBUG
-
     printLog(ERROR, message, newline);
-
-#endif // SERIAL_DEBUG
 }
 
 // Log info with new line
 void DebugEsp::debI(String message, bool newline)
 {
-#ifdef SERIAL_DEBUG
-
     printLog(INFO, message, newline);
-
-#endif // SERIAL_DEBUG
 }
 
 // Log warnings with new line
 void DebugEsp::debW(String message, bool newline)
 {
-#ifdef SERIAL_DEBUG
-
     printLog(WARNING, message, newline);
-
-#endif // SERIAL_DEBUG
 }
 
 void DebugEsp::debActivityIndicator()
 {
+    const char activityChars[] = {'|', '/', '-', '\\'};
+
 #ifdef SERIAL_DEBUG
 
-    const char activityChars[] = {'|', '/', '-', '\\'};
     Serial.print("\b");
     Serial.print(activityChars[activityState]);
-    activityState = (activityState + 1) % 4;
 
 #endif // SERIAL_DEBUG
+
+#ifdef WEBSERIAL_DEBUG
+
+    WebSerial.print("\b");
+    WebSerial.print(activityChars[activityState]);
+
+#endif // WEBSERIAL_DEBUG
+
+    activityState = (activityState + 1) % 4;
 }
 
 void DebugEsp::debActivityIndicatorStop()
@@ -75,6 +87,14 @@ void DebugEsp::debActivityIndicatorStop()
     Serial.println();
 
 #endif // SERIAL_DEBUG
+
+#ifdef WEBSERIAL_DEBUG
+
+    WebSerial.print("\b");
+    WebSerial.print(" ");
+    WebSerial.println();
+
+#endif // WEBSERIAL_DEBUG
 }
 
 void DebugEsp::printLog(LogLevel level, String message, bool newLine)
@@ -106,6 +126,34 @@ void DebugEsp::printLog(LogLevel level, String message, bool newLine)
     }
 
 #endif // SERIAL_DEBUG
+
+#ifdef WEBSERIAL_DEBUG
+
+    switch (level)
+    {
+    case INFO:
+        WebSerial.print("[INFO] ");
+        break;
+
+    case WARNING:
+        WebSerial.print("[WARNING] ");
+        break;
+
+    case ERROR:
+        WebSerial.print("[ERROR] ");
+        break;
+    }
+
+    if (newLine)
+    {
+        WebSerial.println(message);
+    }
+    else
+    {
+        WebSerial.print(message);
+    }
+
+#endif // WEBSERIAL_DEBUG
 }
 
 #endif // DEBUG_ACTIVE

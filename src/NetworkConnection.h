@@ -26,4 +26,6 @@ public:
 private:
 };
 
+extern NetworkConnection network;
+
 #endif

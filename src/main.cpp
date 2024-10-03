@@ -9,13 +9,10 @@ DebugEsp debug;
 void setup()
 {
   debug.begin(9600);
-  debug.debI("Serial started", true);
-
-  debug.debI("Starting network...", true);
-  network.setCallback();
-  network.begin();
 }
 
 void loop()
 {
+  debug.debI("Hmm", true);
+  delay(2000);
 }
