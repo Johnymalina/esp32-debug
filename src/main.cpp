@@ -8,7 +8,7 @@ DebugEsp debug;
 
 void setup()
 {
-  debug.begin(9600); // Initialize Serial at 115200 baud rate
+  debug.begin(9600);
   debug.debI("Serial started", true);
 
   debug.debI("Starting network...", true);
