@@ -25,11 +25,6 @@
 #define SUBNET_MASK 255, 255, 255, 0
 #define HOSTNAME "Lora2MQTT Gateway"
 
-/* SSID and Password set in Secrets.h>
-
-#define WIFI_SSID "YourSSID"
-#define WIFI_PASSWORD "YourPassword"
-
- */
+// ! WARNING Fill password and SSID in Secrets.h
 
 #endif // CONFIG_H
