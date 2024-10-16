@@ -82,16 +82,18 @@ NetworkConnection::NetworkConnection()
 
 void NetworkConnection::begin()
 {
+    setCallback();
 
 #ifdef NETWORK_CONNECTION_ETH
-    ETH.setHostname(HOSTNAME);
-    ETH.begin();
-    ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+    ethBegin();
+    if (!net_connected)
+    {
+#ifdef NETWORK_CONNECTION_WIFI
+        wifiBegin();
 #endif
-    WiFi.setHostname(HOSTNAME);
-    WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    }
 
+#endif
     while (!WiFi.isConnected())
     {
         debug.debActivityIndicator();
@@ -102,16 +104,33 @@ void NetworkConnection::begin()
     // TODO Fallback WLAN connection when ethernet is not available
 }
 
+bool NetworkConnection::ethBegin()
+{
+    ETH.setHostname(HOSTNAME);
+    while (!ETH.begin())
+    {
+    }
+    ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+
+    return net_connected;
+}
+
+bool NetworkConnection::wifiBegin()
+{
+    WiFi.setHostname(HOSTNAME);
+    WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+    while (!WiFi.begin(WIFI_SSID, WIFI_PASSWORD))
+    {
+    }
+
+    return net_connected;
+}
+
 void NetworkConnection::setCallback()
 {
     debug.debI("Network Callback Active", true);
 
     WiFi.onEvent(WiFiEvent);
-}
-
-bool NetworkConnection::isConnected()
-{
-    return net_connected;
 }
 
 // TODO Periodically check connection status wlan/ethernet. Make sense to add also if connected when its not possible to publish this status when network is not connected?
