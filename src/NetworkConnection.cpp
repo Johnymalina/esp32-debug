@@ -3,16 +3,14 @@
 #include "DebugEsp.h"
 #include "Config.h"
 
+noDelay timeout(5000);
+
 volatile bool net_connected = false;
 
 void WiFiEvent(WiFiEvent_t event)
 {
     switch (event)
     {
-
-    case ARDUINO_EVENT_ETH_START:
-        debug.debI("Ethernet Network Started", true);
-        break;
 
     case ARDUINO_EVENT_ETH_CONNECTED:
         debug.debI("Ethernet Network Connected", true);
@@ -32,15 +30,6 @@ void WiFiEvent(WiFiEvent_t event)
             debug.debW("ETH Disconnected", true);
         }
         net_connected = false;
-        break;
-
-    case ARDUINO_EVENT_ETH_STOP:
-        debug.debW("ETH Stopped", true);
-        net_connected = false;
-        break;
-
-    case ARDUINO_EVENT_WIFI_STA_START:
-        debug.debI("WiFi connecting...", false);
         break;
 
     case ARDUINO_EVENT_WIFI_STA_CONNECTED:
@@ -66,11 +55,6 @@ void WiFiEvent(WiFiEvent_t event)
         net_connected = false;
         break;
 
-    case ARDUINO_EVENT_WIFI_STA_STOP:
-        debug.debW("WiFi Stopped", true);
-        net_connected = false;
-        break;
-
     default:
         break;
     }
@@ -80,12 +64,13 @@ NetworkConnection::NetworkConnection()
 {
 }
 
-void NetworkConnection::begin()
+bool NetworkConnection::begin()
 {
     setCallback();
 
 #ifdef NETWORK_CONNECTION_ETH
     ethBegin();
+
     if (!net_connected)
     {
 #ifdef NETWORK_CONNECTION_WIFI
@@ -94,36 +79,59 @@ void NetworkConnection::begin()
     }
 
 #endif
-    while (!WiFi.isConnected())
-    {
-        debug.debActivityIndicator();
-        delay(100);
-    }
 
-    debug.debActivityIndicatorStop();
+    return net_connected;
     // TODO Fallback WLAN connection when ethernet is not available
 }
 
 bool NetworkConnection::ethBegin()
 {
     ETH.setHostname(HOSTNAME);
-    while (!ETH.begin())
-    {
-    }
+    ETH.begin();
     ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
 
-    return net_connected;
+    timeout.start();
+    while (!ETH.linkUp())
+    {
+        debug.debActivityIndicator();
+        delay(100);
+
+        if (timeout.update())
+        {
+            debug.debActivityIndicatorStop();
+            net_connected = 0;
+            return 0;
+        }
+    }
+
+    debug.debActivityIndicatorStop();
+    net_connected = 1;
+    return 1;
 }
 
 bool NetworkConnection::wifiBegin()
 {
     WiFi.setHostname(HOSTNAME);
     WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
-    while (!WiFi.begin(WIFI_SSID, WIFI_PASSWORD))
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+    timeout.start();
+    while (!WiFi.isConnected())
     {
+        debug.debActivityIndicator();
+        delay(100);
+
+        if (timeout.update())
+        {
+            debug.debActivityIndicatorStop();
+            net_connected = 0;
+            return 0;
+        }
     }
 
-    return net_connected;
+    debug.debActivityIndicatorStop();
+    net_connected = 1;
+    return 1;
 }
 
 void NetworkConnection::setCallback()

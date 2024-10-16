@@ -18,7 +18,7 @@ class NetworkConnection
 {
 public:
     NetworkConnection();
-    void begin();
+    bool begin();
     void setCallback();
     bool isConnected();
 
