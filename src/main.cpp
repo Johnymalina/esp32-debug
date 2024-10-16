@@ -13,6 +13,5 @@ void setup()
 
 void loop()
 {
-  debug.debI("Hmm", true);
-  delay(2000);
+
 }

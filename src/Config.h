@@ -14,9 +14,11 @@
 
 // INFO Network connection related config
 
-// #define NETWORK_CONNECTION_ETH
+#define NETWORK_CONNECTION_ETH
 
 #define NETWORK_CONNECTION_WIFI
+
+#define STATIC_IP
 
 #define IP_ADDRESS 10, 10, 42, 5
 #define DEFAULT_GATEWAY 10, 10, 42, 1
