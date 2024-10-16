@@ -26,7 +26,6 @@ void DebugEsp::begin(unsigned long baudRate)
 
 #ifdef WEBSERIAL_DEBUG
 
-    debug.debI("Starting network...", true);
     network.begin();
     WebSerial.begin(&server);
     server.begin();

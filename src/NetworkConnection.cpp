@@ -64,8 +64,10 @@ NetworkConnection::NetworkConnection()
 {
 }
 
-bool NetworkConnection::begin()
+void NetworkConnection::begin()
 {
+    debug.debI("Starting network...", true);
+
     setCallback();
 
 #ifdef NETWORK_CONNECTION_ETH
@@ -79,8 +81,6 @@ bool NetworkConnection::begin()
     }
 
 #endif
-
-    return net_connected;
     // TODO Fallback WLAN connection when ethernet is not available
 }
 
@@ -115,6 +115,7 @@ bool NetworkConnection::wifiBegin()
     WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
+    debug.debI("Nw start", true);
     timeout.start();
     while (!WiFi.isConnected())
     {
@@ -139,6 +140,14 @@ void NetworkConnection::setCallback()
     debug.debI("Network Callback Active", true);
 
     WiFi.onEvent(WiFiEvent);
+}
+
+bool NetworkConnection::isConnected()
+{
+    if (!net_connected)
+    {
+        begin();
+    }
 }
 
 // TODO Periodically check connection status wlan/ethernet. Make sense to add also if connected when its not possible to publish this status when network is not connected?
