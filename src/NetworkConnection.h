@@ -21,9 +21,9 @@ public:
     void begin();
     void setCallback();
     bool isConnected();
-    bool net_connected;
 
 private:
+    bool net_connected;
 };
 
 extern NetworkConnection network;
