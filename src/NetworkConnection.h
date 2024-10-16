@@ -24,6 +24,8 @@ public:
 
 private:
     bool net_connected;
+    bool ethBegin();
+    bool wifiBegin();
 };
 
 extern NetworkConnection network;
