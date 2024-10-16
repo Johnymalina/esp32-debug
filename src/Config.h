@@ -26,7 +26,10 @@
 #define HOSTNAME "Lora2MQTT Gateway"
 
 /* SSID and Password set in Secrets.h>
+
 #define WIFI_SSID "YourSSID"
-#define WIFI_PASSWORD "YourPassword" */
+#define WIFI_PASSWORD "YourPassword"
+
+ */
 
 #endif // CONFIG_H
