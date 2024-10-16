@@ -6,6 +6,8 @@
 
 AsyncWebServer server(80);
 
+noDelay timeoutSerial(5000);
+
 #endif // WEBSERIAL_DEBUG
 
 #ifdef DEBUG_ACTIVE
@@ -20,16 +22,15 @@ void DebugEsp::begin(unsigned long baudRate)
 {
 #ifdef SERIAL_DEBUG
 
-    Serial.begin(baudRate);
-    delay(1000);
+    // Serial.begin(baudRate);
 
-    if (Serial)
+    timeoutSerial.start();
+    while (!Serial)
     {
-        serialDebugRunning = 1;
-    }
-    else
-    {
-        serialDebugRunning = 0;
+        if (timeoutSerial.update())
+        {
+            ESP.restart();
+        }
     }
 
 #endif // SERIAL_DEBUG

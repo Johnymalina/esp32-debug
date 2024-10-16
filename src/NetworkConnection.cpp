@@ -3,7 +3,7 @@
 #include "DebugEsp.h"
 #include "Config.h"
 
-noDelay timeout(5000);
+noDelay timeoutConnection(5000);
 
 volatile bool net_connected = false;
 
@@ -91,13 +91,13 @@ bool NetworkConnection::ethBegin()
     ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
 
     debug.debI("Ethernet connecting...", true);
-    timeout.start();
+    timeoutConnection.start();
     while (!ETH.linkUp())
     {
         debug.debActivityIndicator();
         delay(100);
 
-        if (timeout.update())
+        if (timeoutConnection.update())
         {
             debug.debActivityIndicatorStop();
             net_connected = 0;
@@ -117,13 +117,13 @@ bool NetworkConnection::wifiBegin()
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
     debug.debI("WiFi Connecting...", true);
-    timeout.start();
+    timeoutConnection.start();
     while (!WiFi.isConnected())
     {
         debug.debActivityIndicator();
         delay(100);
 
-        if (timeout.update())
+        if (timeoutConnection.update())
         {
             debug.debActivityIndicatorStop();
             net_connected = 0;
