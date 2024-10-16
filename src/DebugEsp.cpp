@@ -21,20 +21,48 @@ void DebugEsp::begin(unsigned long baudRate)
 #ifdef SERIAL_DEBUG
 
     Serial.begin(baudRate);
+    delay(1000);
+
+    if (Serial)
+    {
+        serialDebugRunning = 1;
+    }
+    else
+    {
+        serialDebugRunning = 0;
+    }
 
 #endif // SERIAL_DEBUG
 
 #ifdef WEBSERIAL_DEBUG
 
     network.begin();
-    WebSerial.begin(&server);
-    server.begin();
+
+    if (network.isConnected())
+    {
+        WebSerial.begin(&server);
+        server.begin();
+        webserialDebugRunning = 1;
+    }
+    else
+    {
+        webserialDebugRunning = 0;
+    }
 
 #endif // WEBSERIAL_DEBUG
 
-    delay(1000);
-
-    debug.debI("Debug started", true);
+    if (serialDebugRunning)
+    {
+        debug.debI("Serial Running", true);
+    }
+    if (webserialDebugRunning)
+    {
+        debug.debI("WebSerial Running", true);
+    }
+    else
+    {
+        debug.debW("WebSerial could not be started", true);
+    }
 }
 
 // Print without new line for errors

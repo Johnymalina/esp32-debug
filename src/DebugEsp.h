@@ -34,6 +34,8 @@ public:
 private:
     void printLog(LogLevel level, String message, bool newLine);
     int activityState;
+    bool serialDebugRunning;
+    bool webserialDebugRunning;
 };
 
 extern DebugEsp debug;

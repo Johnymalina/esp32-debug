@@ -90,6 +90,7 @@ bool NetworkConnection::ethBegin()
     ETH.begin();
     ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
 
+    debug.debI("Ethernet connecting...", true);
     timeout.start();
     while (!ETH.linkUp())
     {
@@ -115,7 +116,7 @@ bool NetworkConnection::wifiBegin()
     WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
-    debug.debI("Nw start", true);
+    debug.debI("WiFi Connecting...", true);
     timeout.start();
     while (!WiFi.isConnected())
     {
@@ -146,8 +147,9 @@ bool NetworkConnection::isConnected()
 {
     if (!net_connected)
     {
-        begin();
+        return 0;
     }
+    return 1;
 }
 
 // TODO Periodically check connection status wlan/ethernet. Make sense to add also if connected when its not possible to publish this status when network is not connected?
