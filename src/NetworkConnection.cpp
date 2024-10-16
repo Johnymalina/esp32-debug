@@ -20,7 +20,7 @@ void WiFiEvent(WiFiEvent_t event)
         break;
 
     case ARDUINO_EVENT_ETH_GOT_IP:
-        debug.debI(String("Ethernet IPv4: ") + ETH.localIP(), true);
+        debug.debI(String("Ethernet IPv4: ") + ETH.localIP().toString(), true);
         debug.debI(String("Hostname: ") + ETH.getHostname(), true);
         debug.debI(String("MAC: ") + ETH.macAddress(), true);
         debug.debI(String("Speed: ") + ETH.linkSpeed() + String("Mbps"), true);
