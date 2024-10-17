@@ -70,26 +70,23 @@ void NetworkConnection::begin()
 
     setCallback();
 
-#ifdef NETWORK_CONNECTION_ETH
     ethBegin();
 
     if (!net_connected)
     {
-#ifdef NETWORK_CONNECTION_WIFI
         wifiBegin();
-#endif
     }
-
-#endif
     // TODO Fallback WLAN connection when ethernet is not available
 }
 
 bool NetworkConnection::ethBegin()
 {
-    ETH.setHostname(HOSTNAME);
+#ifdef NETWORK_CONNECTION_ETH
     ETH.begin();
+    ETH.setHostname(HOSTNAME);
+#ifdef STATIC_IP
     ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
-
+#endif
     debug.debI("Ethernet connecting...", true);
     timeoutConnection.start();
     while (!ETH.linkUp())
@@ -108,12 +105,16 @@ bool NetworkConnection::ethBegin()
     debug.debActivityIndicatorStop();
     net_connected = 1;
     return 1;
+#endif
 }
 
 bool NetworkConnection::wifiBegin()
 {
+#ifdef NETWORK_CONNECTION_WIFI
     WiFi.setHostname(HOSTNAME);
+#ifdef STATIC_IP
     WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+#endif
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
     debug.debI("WiFi Connecting...", true);
@@ -134,6 +135,7 @@ bool NetworkConnection::wifiBegin()
     debug.debActivityIndicatorStop();
     net_connected = 1;
     return 1;
+#endif
 }
 
 void NetworkConnection::setCallback()
