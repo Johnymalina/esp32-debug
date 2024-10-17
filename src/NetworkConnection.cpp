@@ -5,7 +5,7 @@
 
 noDelay timeoutConnection(5000);
 
-volatile bool net_connected = false;
+volatile bool _netConnected = false;
 
 void WiFiEvent(WiFiEvent_t event)
 {
@@ -14,7 +14,7 @@ void WiFiEvent(WiFiEvent_t event)
 
     case ARDUINO_EVENT_ETH_CONNECTED:
         debug.debI("Ethernet Network Connected", true);
-        net_connected = true;
+        _netConnected = true;
         break;
 
     case ARDUINO_EVENT_ETH_GOT_IP:
@@ -25,17 +25,17 @@ void WiFiEvent(WiFiEvent_t event)
         break;
 
     case ARDUINO_EVENT_ETH_DISCONNECTED:
-        if (net_connected)
+        if (_netConnected)
         {
             debug.debW("ETH Disconnected", true);
         }
-        net_connected = false;
+        _netConnected = false;
         break;
 
     case ARDUINO_EVENT_WIFI_STA_CONNECTED:
         debug.debActivityIndicatorStop();
         debug.debI("WiFi connected", true);
-        net_connected = true;
+        _netConnected = true;
         break;
 
     case ARDUINO_EVENT_WIFI_STA_GOT_IP:
@@ -48,11 +48,11 @@ void WiFiEvent(WiFiEvent_t event)
         break;
 
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
-        if (net_connected)
+        if (_netConnected)
         {
             debug.debW("WiFi disconnected. Reconnecting...", true);
         }
-        net_connected = false;
+        _netConnected = false;
         break;
 
     default:
@@ -72,7 +72,7 @@ void NetworkConnection::begin()
 
     ethBegin();
 
-    if (!net_connected)
+    if (!_netConnected)
     {
         wifiBegin();
     }
@@ -102,13 +102,13 @@ bool NetworkConnection::ethBegin()
         if (timeoutConnection.update())
         {
             debug.debActivityIndicatorStop();
-            net_connected = 0;
+            _netConnected = 0;
             return 0;
         }
     }
 
     debug.debActivityIndicatorStop();
-    net_connected = 1;
+    _netConnected = 1;
     return 1;
 
 #endif
@@ -138,13 +138,13 @@ bool NetworkConnection::wifiBegin()
         if (timeoutConnection.update())
         {
             debug.debActivityIndicatorStop();
-            net_connected = 0;
+            _netConnected = 0;
             return 0;
         }
     }
 
     debug.debActivityIndicatorStop();
-    net_connected = 1;
+    _netConnected = 1;
     return 1;
 
 #endif
@@ -159,7 +159,7 @@ void NetworkConnection::setCallback()
 
 bool NetworkConnection::isConnected()
 {
-    if (!net_connected)
+    if (!_netConnected)
     {
         return 0;
     }

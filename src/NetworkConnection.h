@@ -23,7 +23,10 @@ public:
     bool isConnected();
 
 private:
-    bool net_connected;
+    bool _netConnected;
+    bool _ethConnected;
+    bool _wifiConnected;
+
     bool ethBegin();
     bool wifiBegin();
 };
