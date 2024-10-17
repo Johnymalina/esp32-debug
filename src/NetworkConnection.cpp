@@ -6,6 +6,8 @@
 noDelay timeoutConnection(5000);
 
 volatile bool _netConnected = false;
+volatile bool _ethConnected = false;
+volatile bool _wifiConnected = false;
 
 void WiFiEvent(WiFiEvent_t event)
 {
@@ -14,6 +16,7 @@ void WiFiEvent(WiFiEvent_t event)
 
     case ARDUINO_EVENT_ETH_CONNECTED:
         debug.debI("Ethernet Network Connected", true);
+        _ethConnected = false;
         _netConnected = true;
         break;
 
@@ -29,12 +32,14 @@ void WiFiEvent(WiFiEvent_t event)
         {
             debug.debW("ETH Disconnected", true);
         }
+        _ethConnected = false;
         _netConnected = false;
         break;
 
     case ARDUINO_EVENT_WIFI_STA_CONNECTED:
         debug.debActivityIndicatorStop();
         debug.debI("WiFi connected", true);
+        _wifiConnected = false;
         _netConnected = true;
         break;
 
@@ -52,6 +57,7 @@ void WiFiEvent(WiFiEvent_t event)
         {
             debug.debW("WiFi disconnected. Reconnecting...", true);
         }
+        _wifiConnected = false;
         _netConnected = false;
         break;
 
