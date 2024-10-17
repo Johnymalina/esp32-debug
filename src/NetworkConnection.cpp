@@ -82,12 +82,17 @@ void NetworkConnection::begin()
 bool NetworkConnection::ethBegin()
 {
 #ifdef NETWORK_CONNECTION_ETH
+
+    debug.debI("Ethernet connecting...", true);
     ETH.begin();
     ETH.setHostname(HOSTNAME);
+
 #ifdef STATIC_IP
+
     ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+
 #endif
-    debug.debI("Ethernet connecting...", true);
+
     timeoutConnection.start();
     while (!ETH.linkUp())
     {
@@ -105,16 +110,22 @@ bool NetworkConnection::ethBegin()
     debug.debActivityIndicatorStop();
     net_connected = 1;
     return 1;
+
 #endif
 }
 
 bool NetworkConnection::wifiBegin()
 {
 #ifdef NETWORK_CONNECTION_WIFI
+
     WiFi.setHostname(HOSTNAME);
+
 #ifdef STATIC_IP
+
     WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+
 #endif
+
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
     debug.debI("WiFi Connecting...", true);
@@ -135,6 +146,7 @@ bool NetworkConnection::wifiBegin()
     debug.debActivityIndicatorStop();
     net_connected = 1;
     return 1;
+
 #endif
 }
 
