@@ -22,7 +22,7 @@ void DebugEsp::begin(unsigned long baudRate)
 {
 #ifdef SERIAL_DEBUG
 
-    // Serial.begin(baudRate);
+    Serial.begin(baudRate);
 
     timeoutSerial.start();
     while (!Serial)
