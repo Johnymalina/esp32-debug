@@ -5,19 +5,20 @@
 
 noDelay timeoutConnection(5000);
 
-volatile bool _netConnected = false;
-volatile bool _ethConnected = false;
-volatile bool _wifiConnected = false;
+NetworkConnection::NetworkConnection()
+    : _netConnected(false), _ethConnected(false), _wifiConnected(false)
+{
+}
 
-void WiFiEvent(WiFiEvent_t event)
+void NetworkConnection::WiFiEvent(WiFiEvent_t event)
 {
     switch (event)
     {
 
     case ARDUINO_EVENT_ETH_CONNECTED:
         debug.debI("Ethernet Network Connected", true);
-        _ethConnected = true;
-        _netConnected = true;
+        network._ethConnected = true;
+        network._netConnected = true;
         break;
 
     case ARDUINO_EVENT_ETH_GOT_IP:
@@ -28,19 +29,19 @@ void WiFiEvent(WiFiEvent_t event)
         break;
 
     case ARDUINO_EVENT_ETH_DISCONNECTED:
-        if (_netConnected)
+        if (network._netConnected)
         {
             debug.debW("ETH Disconnected", true);
         }
-        _ethConnected = false;
-        _netConnected = false;
+        network._ethConnected = false;
+        network._netConnected = false;
         break;
 
     case ARDUINO_EVENT_WIFI_STA_CONNECTED:
         debug.debActivityIndicatorStop();
         debug.debI("WiFi connected", true);
-        _wifiConnected = false;
-        _netConnected = true;
+        network._wifiConnected = true;
+        network._netConnected = true;
         break;
 
     case ARDUINO_EVENT_WIFI_STA_GOT_IP:
@@ -53,21 +54,17 @@ void WiFiEvent(WiFiEvent_t event)
         break;
 
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
-        if (_netConnected)
+        if (network._netConnected)
         {
             debug.debW("WiFi disconnected. Reconnecting...", true);
         }
-        _wifiConnected = false;
-        _netConnected = false;
+        network._wifiConnected = false;
+        network._netConnected = false;
         break;
 
     default:
         break;
     }
-}
-
-NetworkConnection::NetworkConnection()
-{
 }
 
 void NetworkConnection::begin()
@@ -108,13 +105,11 @@ bool NetworkConnection::ethBegin()
         if (timeoutConnection.update())
         {
             debug.debActivityIndicatorStop();
-            _netConnected = 0;
             return 0;
         }
     }
 
     debug.debActivityIndicatorStop();
-    _netConnected = 1;
     return 1;
 
 #endif
@@ -163,6 +158,13 @@ void NetworkConnection::setCallback()
 
 bool NetworkConnection::isConnected()
 {
+    if (timeoutConnection.update())
+    {
+        debug.debI(String(_netConnected), true);
+        debug.debI(String(_ethConnected), true);
+        debug.debI(String(_wifiConnected), true);
+    }
+
     if (!_netConnected)
     {
         return 0;

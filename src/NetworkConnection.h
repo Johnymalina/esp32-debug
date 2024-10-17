@@ -23,12 +23,14 @@ public:
     bool isConnected();
 
 private:
-    bool _netConnected;
-    bool _ethConnected;
-    bool _wifiConnected;
+    volatile bool _netConnected;
+    volatile bool _ethConnected;
+    volatile bool _wifiConnected;
 
     bool ethBegin();
     bool wifiBegin();
+
+    static void WiFiEvent(WiFiEvent_t event);
 };
 
 extern NetworkConnection network;
