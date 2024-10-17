@@ -16,7 +16,7 @@ void WiFiEvent(WiFiEvent_t event)
 
     case ARDUINO_EVENT_ETH_CONNECTED:
         debug.debI("Ethernet Network Connected", true);
-        _ethConnected = false;
+        _ethConnected = true;
         _netConnected = true;
         break;
 
@@ -144,13 +144,11 @@ bool NetworkConnection::wifiBegin()
         if (timeoutConnection.update())
         {
             debug.debActivityIndicatorStop();
-            _netConnected = 0;
             return 0;
         }
     }
 
     debug.debActivityIndicatorStop();
-    _netConnected = 1;
     return 1;
 
 #endif
