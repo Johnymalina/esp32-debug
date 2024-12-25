@@ -56,7 +56,7 @@ void NetworkConnection::WiFiEvent(WiFiEvent_t event)
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
         if (network._netConnected)
         {
-            debug.debW("WiFi disconnected. Reconnecting...", true);
+            debug.debW("WiFi disconnected", true);
         }
         network._wifiConnected = false;
         network._netConnected = false;
@@ -158,11 +158,12 @@ void NetworkConnection::setCallback()
 
 bool NetworkConnection::isConnected()
 {
+
     if (timeoutConnection.update())
     {
-        debug.debI(String(_netConnected), true);
-        debug.debI(String(_ethConnected), true);
-        debug.debI(String(_wifiConnected), true);
+        debug.debI(String("Network Connected: ") + String(_netConnected), true);
+        debug.debI(String("Ethernet Connected: ") + String(_ethConnected), true);
+        debug.debI(String("WiFi Connected: ") + String(_wifiConnected), true);
     }
 
     if (!_netConnected)
