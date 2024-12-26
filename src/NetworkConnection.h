@@ -27,11 +27,11 @@ private:
     volatile bool _ethConnected;
     volatile bool _wifiConnected;
 
-    bool ethBegin();
-    bool wifiBegin();
-
     static void WiFiEvent(WiFiEvent_t event);
 };
+
+bool ethBegin();
+bool wifiBegin();
 
 extern NetworkConnection network;
 

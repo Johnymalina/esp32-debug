@@ -79,7 +79,7 @@ void NetworkConnection::begin()
     }
 }
 
-bool NetworkConnection::ethBegin()
+bool ethBegin()
 {
 #ifdef NETWORK_CONNECTION_ETH
 
@@ -114,7 +114,7 @@ bool NetworkConnection::ethBegin()
 #endif
 }
 
-bool NetworkConnection::wifiBegin()
+bool wifiBegin()
 {
 #ifdef NETWORK_CONNECTION_WIFI
 
