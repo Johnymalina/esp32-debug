@@ -35,4 +35,4 @@ private:
 
 extern NetworkConnection network;
 
-#endif
+#endif // NETWORK_CONNECTION_H
