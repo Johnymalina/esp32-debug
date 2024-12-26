@@ -163,11 +163,37 @@ bool NetworkConnection::isConnected()
 {
     if (!_ethConnected && !_wifiConnected)
     {
-        wifiBegin();
+
+        if (reconnectCount == 0)
+        {
+            Serial.println("First connection attempt");
+            timeoutConnection.start();
+            wifiBegin();
+            reconnectCount++;
+        }
+
+        if (timeoutConnection.update())
+        {
+            reconnectCount++;
+            timeoutConnection.start();
+            debug.debW("Reconnect count: " + String(reconnectCount), true);
+
+            if (reconnectCount >= maxReconnect)
+            {
+                debug.debW("Max reconnect reached. Restarting", true);
+                delay(5000);
+                ESP.restart();
+            }
+        }
     }
-    else if (_ethConnected)
+    else if (_ethConnected && _wifiConnected)
     {
         WiFi.disconnect();
+    }
+
+    if (_netConnected && reconnectCount > 0)
+    {
+        reconnectCount = 0;
     }
 
     return _netConnected;
