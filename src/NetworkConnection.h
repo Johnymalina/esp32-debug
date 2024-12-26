@@ -19,17 +19,16 @@ class NetworkConnection
 public:
     NetworkConnection();
     void begin();
-    void setCallback();
     bool isConnected();
+    static void WiFiEvent(WiFiEvent_t event);
 
 private:
     volatile bool _netConnected;
     volatile bool _ethConnected;
     volatile bool _wifiConnected;
-
-    static void WiFiEvent(WiFiEvent_t event);
 };
 
+void setCallback();
 bool ethBegin();
 bool wifiBegin();
 

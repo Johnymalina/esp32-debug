@@ -4,6 +4,86 @@
 #include "Config.h"
 
 noDelay timeoutConnection(5000);
+int maxReconnect = 5;
+int reconnectCount = 0;
+
+void setCallback()
+{
+    debug.debI("Network Callback Active", true);
+
+    WiFi.onEvent(NetworkConnection::WiFiEvent);
+}
+
+bool ethBegin()
+{
+#ifdef NETWORK_CONNECTION_ETH
+
+    debug.debI("Ethernet connecting...", true);
+    ETH.begin();
+    ETH.setHostname(HOSTNAME);
+
+#ifdef STATIC_IP
+
+    ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+
+#endif
+
+    timeoutConnection.start();
+    while (!ETH.linkUp())
+    {
+        debug.debActivityIndicator();
+        delay(100);
+
+        if (timeoutConnection.update())
+        {
+            debug.debActivityIndicatorStop();
+            return false;
+        }
+    }
+
+    debug.debActivityIndicatorStop();
+    return true;
+
+#else
+    return false;
+#endif
+}
+
+bool wifiBegin()
+{
+#ifdef NETWORK_CONNECTION_WIFI
+
+    WiFi.setHostname(HOSTNAME);
+
+#ifdef STATIC_IP
+
+    WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
+
+#endif
+
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+    debug.debI("WiFi Connecting...", true);
+    timeoutConnection.start();
+    while (!WiFi.isConnected())
+    {
+        debug.debActivityIndicator();
+        delay(100);
+
+        if (timeoutConnection.update())
+        {
+            debug.debActivityIndicatorStop();
+            return false;
+        }
+    }
+
+    debug.debActivityIndicatorStop();
+    return true;
+
+#else
+    return false;
+#endif
+}
 
 NetworkConnection::NetworkConnection()
     : _netConnected(false), _ethConnected(false), _wifiConnected(false)
@@ -79,92 +159,15 @@ void NetworkConnection::begin()
     }
 }
 
-bool ethBegin()
-{
-#ifdef NETWORK_CONNECTION_ETH
-
-    debug.debI("Ethernet connecting...", true);
-    ETH.begin();
-    ETH.setHostname(HOSTNAME);
-
-#ifdef STATIC_IP
-
-    ETH.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
-
-#endif
-
-    timeoutConnection.start();
-    while (!ETH.linkUp())
-    {
-        debug.debActivityIndicator();
-        delay(100);
-
-        if (timeoutConnection.update())
-        {
-            debug.debActivityIndicatorStop();
-            return false;
-        }
-    }
-
-    debug.debActivityIndicatorStop();
-    return true;
-
-#else
-    return false;
-#endif
-}
-
-bool wifiBegin()
-{
-#ifdef NETWORK_CONNECTION_WIFI
-
-    WiFi.setHostname(HOSTNAME);
-
-#ifdef STATIC_IP
-
-    WiFi.config(IPAddress(IP_ADDRESS), IPAddress(DEFAULT_GATEWAY), IPAddress(SUBNET_MASK));
-
-#endif
-
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-    debug.debI("WiFi Connecting...", true);
-    timeoutConnection.start();
-    while (!WiFi.isConnected())
-    {
-        debug.debActivityIndicator();
-        delay(100);
-
-        if (timeoutConnection.update())
-        {
-            debug.debActivityIndicatorStop();
-            return false;
-        }
-    }
-
-    debug.debActivityIndicatorStop();
-    return true;
-
-#else
-    return false;
-#endif
-}
-
-void NetworkConnection::setCallback()
-{
-    debug.debI("Network Callback Active", true);
-
-    WiFi.onEvent(WiFiEvent);
-}
-
 bool NetworkConnection::isConnected()
 {
-
-    if (timeoutConnection.update())
+    if (!_ethConnected && !_wifiConnected)
     {
-        debug.debI(String("Network Connected: ") + String(_netConnected), true);
-        debug.debI(String("Ethernet Connected: ") + String(_ethConnected), true);
-        debug.debI(String("WiFi Connected: ") + String(_wifiConnected), true);
+        wifiBegin();
+    }
+    else if (_ethConnected)
+    {
+        WiFi.disconnect();
     }
 
     return _netConnected;
